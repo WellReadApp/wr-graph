@@ -1,0 +1,33 @@
+{
+  "name": "wr-api",
+  "version": "1.0.0",
+  "description": "GraphQL API for WellRead book summaries",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["graphql", "apollo", "books", "api"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/server": "^4.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "graphql": "^16.8.1",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.11.16",
+    "@types/pg": "^8.11.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
