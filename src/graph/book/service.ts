@@ -28,9 +28,10 @@ export class BookService {
     return await db.query(`
       SELECT * FROM book.book
       WHERE 
-        title ILIKE $1 
+        (title ILIKE $1 
         OR primary_author_name ILIKE $1
-        OR description ILIKE $1
+        OR description ILIKE $1)
+        AND status = 'ENRICHED'
       ORDER BY readinglog_count DESC
       LIMIT $2 OFFSET $3
     `, [`%${query}%`, limit, offset]);
@@ -42,7 +43,7 @@ export class BookService {
   ): Promise<Book[]> {
     return await db.query(`
       SELECT * FROM book.book
-      WHERE status = 'ACTIVE'
+      WHERE status = 'ENRICHED'
       ORDER BY readinglog_count DESC, first_publish_year DESC
       LIMIT $1 OFFSET $2
     `, [limit, offset]);
@@ -54,7 +55,7 @@ export class BookService {
   ): Promise<Book[]> {
     return await db.query(`
       SELECT * FROM book.book
-      WHERE status = 'ACTIVE'
+      WHERE status = 'ENRICHED'
       AND created_at >= NOW() - INTERVAL '30 days'
       ORDER BY created_at DESC
       LIMIT $1 OFFSET $2
@@ -106,7 +107,7 @@ export class BookService {
     return await db.query(`
       SELECT * FROM book.book 
       WHERE id = ANY($1)
-      AND status = 'ACTIVE'
+      AND status = 'ENRICHED'
     `, [similarBookIds.map(b => b.similar_book_id)]);
   }
 
@@ -133,7 +134,7 @@ export class BookService {
       SELECT *
       FROM book.book
       WHERE 
-        status = 'ACTIVE'
+        status = 'ENRICHED'
         AND (
           title ILIKE $1 
           OR primary_author_name ILIKE $1
