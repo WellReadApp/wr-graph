@@ -8,6 +8,7 @@ import { BookService } from '../service';
 import { Context } from '@src/graph/types/Context';
 import { Library } from '../../library/types/Library';
 import { ReadingProgress } from '../../library/types/ReadingProgress';
+import { SummaryPage } from '../types/SummaryPage';
 
 @Resolver((_of) => Book)
 export class BookResolver {
@@ -65,6 +66,13 @@ export class BookResolver {
   ): Promise<ReadingProgress | null> {
     if (!ctx.user_id) return null;
     return await LibraryService.getProgress(ctx.user_id, book.id);
+  }
+
+  @FieldResolver(() => [SummaryPage], {
+    description: 'Get paginated summary content for this book'
+  })
+  async summary_pages(@Root() book: Book): Promise<SummaryPage[]> {
+    return await BookService.getBookSummaryPages(book.id);
   }
 
 }

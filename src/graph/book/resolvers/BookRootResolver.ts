@@ -1,6 +1,7 @@
 import { Resolver, Query, Arg, UseMiddleware, Int } from 'type-graphql';
 import { Book } from '@src/graph/book/types/Book';
 import { Genre } from '@src/graph/book/types/Genre';
+import { SummaryPage } from '@src/graph/book/types/SummaryPage';
 import { BookService } from '@src/graph/book/service';
 import { isLoggedIn } from '@src/graph/middleware/helper';
 
@@ -94,6 +95,37 @@ export class BookRootResolver {
     }) limit?: number
   ): Promise<Book[]> {
     return await BookService.searchAutocomplete(query, limit);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Query(() => SummaryPage, {
+    description: 'Get a summary page by its ID'
+  })
+  async get_summary_page(
+    @Arg('id', { description: 'Summary page ID' }) id: string
+  ): Promise<SummaryPage> {
+    return await BookService.getSummaryPageById(id);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Query(() => SummaryPage, {
+    description: 'Get a specific page number from a book\'s summary'
+  })
+  async get_book_summary_page(
+    @Arg('bookId', { description: 'Book ID' }) bookId: string,
+    @Arg('pageNumber', () => Int, { description: 'Page number to fetch' }) pageNumber: number
+  ): Promise<SummaryPage> {
+    return await BookService.getBookSummaryPage(bookId, pageNumber);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Query(() => [SummaryPage], {
+    description: 'Get all summary pages for a book'
+  })
+  async list_book_summary_pages(
+    @Arg('bookId', { description: 'Book ID' }) bookId: string
+  ): Promise<SummaryPage[]> {
+    return await BookService.getBookSummaryPages(bookId);
   }
 
 }

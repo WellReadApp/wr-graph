@@ -5,6 +5,7 @@ import { BookGenre } from './types/BookGenre';
 import { Quote } from './types/Quote';
 import { KeyPoint } from './types/KeyPoint';
 import { Genre } from './types/Genre';
+import { SummaryPage } from './types/SummaryPage';
 
 export class BookService {
 
@@ -153,6 +154,39 @@ export class BookService {
       `${query}%`,       // Starts with
       limit
     ]);
+  }
+
+  static async getBookSummaryPages(bookId: string): Promise<SummaryPage[]> {
+    return await db.query(`
+      SELECT * FROM book.summary_page 
+      WHERE book_id = $1 
+      ORDER BY page_number ASC
+    `, [bookId]);
+  }
+
+  static async getSummaryPageById(id: string): Promise<SummaryPage> {
+    const page = await db.queryOne(`
+      SELECT * FROM book.summary_page WHERE id = $1
+    `, [id]);
+
+    if (!page) {
+      throw new ItemNotFoundError('Summary page not found');
+    }
+
+    return page;
+  }
+
+  static async getBookSummaryPage(bookId: string, pageNumber: number): Promise<SummaryPage> {
+    const page = await db.queryOne(`
+      SELECT * FROM book.summary_page 
+      WHERE book_id = $1 AND page_number = $2
+    `, [bookId, pageNumber]);
+
+    if (!page) {
+      throw new ItemNotFoundError('Summary page not found');
+    }
+
+    return page;
   }
 
 }
