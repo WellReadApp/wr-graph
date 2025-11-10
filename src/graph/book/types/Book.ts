@@ -36,9 +36,6 @@ export class Book {
   type?: string;
 
   @Field((_type) => String, { nullable: true })
-  summary?: string;
-
-  @Field((_type) => String, { nullable: true })
   picture_url?: string;
 
   @Field((_type) => Int, { nullable: true })
