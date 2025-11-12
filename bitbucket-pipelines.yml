@@ -1,0 +1,38 @@
+image: node:22
+
+clone:
+  depth: full
+
+options:
+  docker: true
+  size: 2x
+  
+definitions:
+  steps:
+    - step: &build
+        image: atlassian/pipelines-docker-daemon:v20-stable
+        script:
+          - docker build -t $ECR_REPO:$DOCKER_ENV_TAG .
+          - pipe: atlassian/aws-ecr-push-image:1.6.2
+            variables:
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              IMAGE_NAME: $ECR_REPO:$DOCKER_ENV_TAG
+              TAGS: $DOCKER_ENV_TAG
+        services:
+          - docker
+        size: 2x
+  services:
+    docker:
+      memory: 7128
+pipelines:
+  branches:
+    main:
+      - step:
+          <<: *build
+          deployment: production
+    dev:
+      - step:
+          <<: *build
+          deployment: dev
