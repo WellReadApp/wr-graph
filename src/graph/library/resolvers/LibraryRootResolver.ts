@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql
 import { Library } from '../types/Library';
 import { LibraryStats } from '../types/LibraryStats';
 import { ReadingStats } from '../types/ReadingStats';
+import { ReadingProgress } from '../types/ReadingProgress';
 import { LibraryService } from '../service';
 import { isLoggedIn } from '@src/graph/middleware/helper';
 import { Context } from '@src/graph/types/Context';
@@ -88,5 +89,64 @@ export class LibraryRootResolver {
     @Arg('bookId') bookId: string
   ): Promise<boolean> {
     return await LibraryService.removeFromLibrary(ctx.user_id, bookId);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Query(() => ReadingProgress, {
+    description: 'Get reading progress for a specific book',
+    nullable: true
+  })
+  async get_reading_progress(
+    @Ctx() ctx: Context,
+    @Arg('bookId') bookId: string
+  ): Promise<ReadingProgress | null> {
+    return await LibraryService.getProgress(ctx.user_id, bookId);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Mutation(() => ReadingProgress, {
+    description: 'Update reading progress for a book'
+  })
+  async update_reading_progress(
+    @Ctx() ctx: Context,
+    @Arg('bookId') bookId: string,
+    @Arg('progress') progress: number,
+    @Arg('currentPage', { nullable: true }) currentPage?: number
+  ): Promise<ReadingProgress> {
+    return await LibraryService.updateProgress(ctx.user_id, bookId, progress, currentPage);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Mutation(() => ReadingProgress, {
+    description: 'Update time spent reading a book'
+  })
+  async update_time_spent(
+    @Ctx() ctx: Context,
+    @Arg('bookId') bookId: string,
+    @Arg('additionalMinutes') additionalMinutes: number
+  ): Promise<ReadingProgress> {
+    return await LibraryService.updateTimeSpent(ctx.user_id, bookId, additionalMinutes);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Mutation(() => ReadingProgress, {
+    description: 'Mark a book as completed'
+  })
+  async mark_book_completed(
+    @Ctx() ctx: Context,
+    @Arg('bookId') bookId: string
+  ): Promise<ReadingProgress> {
+    return await LibraryService.markAsCompleted(ctx.user_id, bookId);
+  }
+
+  @UseMiddleware(isLoggedIn)
+  @Mutation(() => Boolean, {
+    description: 'Reset reading progress for a book'
+  })
+  async reset_reading_progress(
+    @Ctx() ctx: Context,
+    @Arg('bookId') bookId: string
+  ): Promise<boolean> {
+    return await LibraryService.resetProgress(ctx.user_id, bookId);
   }
 }
