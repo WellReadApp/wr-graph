@@ -149,14 +149,6 @@ export class LibraryService {
       DO UPDATE SET
         progress = $3,
         current_page = COALESCE($4, reading_progress.current_page),
-        status = CASE 
-          WHEN $3 = 100 THEN 'completed'::text 
-          ELSE 'reading'::text 
-        END,
-        completed_at = CASE 
-          WHEN $3 = 100 THEN NOW() 
-          ELSE reading_progress.completed_at 
-        END,
         last_read_at = NOW()
       RETURNING *
     `, [userId, bookId, progress, currentPage]);
