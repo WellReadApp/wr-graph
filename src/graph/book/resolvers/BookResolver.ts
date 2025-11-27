@@ -9,6 +9,11 @@ import { Context } from '@src/graph/types/Context';
 import { Library } from '../../library/types/Library';
 import { ReadingProgress } from '../../library/types/ReadingProgress';
 import { SummaryPage } from '../types/SummaryPage';
+import { EnjoymentCriteria } from '../types/EnjoymentCriteria';
+import { ActionableBenefit } from '../types/ActionableBenefit';
+import { ContrastingViewpoint } from '../types/ContrastingViewpoint';
+import { ActionableStep } from '../types/ActionableStep';
+import { BookTheme } from '../types/BookTheme';
 
 @Resolver((_of) => Book)
 export class BookResolver {
@@ -73,6 +78,31 @@ export class BookResolver {
   })
   async summary_pages(@Root() book: Book): Promise<SummaryPage[]> {
     return await BookService.getBookSummaryPages(book.id);
+  }
+
+  @FieldResolver(() => [EnjoymentCriteria])
+  async enjoyment_criteria(@Root() book: Book): Promise<EnjoymentCriteria[]> {
+    return await BookService.getBookEnjoymentCriteria(book.id);
+  }
+
+  @FieldResolver(() => [ActionableBenefit])
+  async actionable_benefits(@Root() book: Book): Promise<ActionableBenefit[]> {
+    return await BookService.getBookActionableBenefits(book.id);
+  }
+
+  @FieldResolver(() => [ContrastingViewpoint])
+  async contrasting_viewpoints(@Root() book: Book): Promise<ContrastingViewpoint[]> {
+    return await BookService.getBookContrastingViewpoints(book.id);
+  }
+
+  @FieldResolver(() => [ActionableStep])
+  async actionable_steps(@Root() book: Book): Promise<ActionableStep[]> {
+    return await BookService.getBookActionableSteps(book.id);
+  }
+
+  @FieldResolver(() => [BookTheme])
+  async book_themes(@Root() book: Book): Promise<BookTheme[]> {
+    return await BookService.getBookThemes(book.id);
   }
 
 }

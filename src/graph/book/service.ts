@@ -6,6 +6,11 @@ import { Quote } from './types/Quote';
 import { KeyPoint } from './types/KeyPoint';
 import { Genre } from './types/Genre';
 import { SummaryPage } from './types/SummaryPage';
+import { EnjoymentCriteria } from './types/EnjoymentCriteria';
+import { ActionableBenefit } from './types/ActionableBenefit';
+import { ContrastingViewpoint } from './types/ContrastingViewpoint';
+import { ActionableStep } from './types/ActionableStep';
+import { BookTheme } from './types/BookTheme';
 
 export class BookService {
 
@@ -187,6 +192,45 @@ export class BookService {
     }
 
     return page;
+  }
+
+  static async getBookEnjoymentCriteria(bookId: string): Promise<EnjoymentCriteria[]> {
+    return await db.query(`
+      SELECT * FROM book.enjoyment_criteria 
+      WHERE book_id = $1 
+      ORDER BY order_index ASC
+    `, [bookId]);
+  }
+
+  static async getBookActionableBenefits(bookId: string): Promise<ActionableBenefit[]> {
+    return await db.query(`
+      SELECT * FROM book.actionable_benefit 
+      WHERE book_id = $1 
+      ORDER BY order_index ASC
+    `, [bookId]);
+  }
+
+  static async getBookContrastingViewpoints(bookId: string): Promise<ContrastingViewpoint[]> {
+    return await db.query(`
+      SELECT * FROM book.contrasting_viewpoint 
+      WHERE book_id = $1 
+      ORDER BY order_index ASC
+    `, [bookId]);
+  }
+
+  static async getBookActionableSteps(bookId: string): Promise<ActionableStep[]> {
+    return await db.query(`
+      SELECT * FROM book.actionable_step 
+      WHERE book_id = $1 
+      ORDER BY order_index ASC
+    `, [bookId]);
+  }
+
+  static async getBookThemes(bookId: string): Promise<BookTheme[]> {
+    return await db.query(`
+      SELECT * FROM book.book_theme 
+      WHERE book_id = $1
+    `, [bookId]);
   }
 
 }
