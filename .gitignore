@@ -45,3 +45,9 @@ prisma/migrations/node_modules
 dist
 build
 .DS_Store
+node_modules
+.env
+.env.*
+dist
+build
+.DS_Store
