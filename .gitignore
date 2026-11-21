@@ -39,4 +39,9 @@ pids/
 coverage/
 
 # Prisma
-prisma/migrations/
+prisma/migrations/node_modules
+.env
+.env.*
+dist
+build
+.DS_Store
